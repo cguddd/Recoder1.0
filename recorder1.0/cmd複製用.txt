@@ -1,0 +1,35 @@
+C:\Users\acer1\django\django_venv\Scripts\activate
+cd C:\Users\acer1\Desktop\專題\cguProject
+cd C:\Users\acer1\Desktop\專題\recorder
+python manage.py runserver 0.0.0.0:8000
+python manage.py createsuperuser
+123456 zxcvb147
+
+https://www.youtube.com/watch?v=m60hjpNtq5k
+每一次 每一次 自己決定是最尾次
+別轉頭思念妳
+
+擱一次 擱一次 機會甘有擱一次
+有時間原諒妳
+
+我還沒清醒
+心中的那個香水氣味
+越想越稀微
+
+我還沒清醒
+知道你為愛自由個性
+手放給你去
+
+想要放袂記對妳的恨
+腳步是越來越重
+眼淚是越來越長
+我想起往事和妳的臉
+眼眶是越來越紅
+眼睛是越來越酸
+
+放妳自由去吧
+是我不夠瞭解
+放妳自由去吧
+是我不夠瞭解妳
+
+想妳點一支煙

@@ -1,0 +1,145 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{% static 'js/recorder.js' %}"></script>
+    <script src="{% static 'js/upload.js' %}"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Live input record and playback</title>
+  <style type='text/css'>
+    ul { list-style: none; }
+    #recordingslist audio { display: block; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <p>請使用Firefox錄製</p>
+  <p>感謝幫忙錄製以下台語內容</p>
+  <p>可以挑會唸的錄製即可</p>
+  <pre>
+     中文   台語          中文   台語          中文   台語
+  1. 一     一        11. 後退   退後      21. 樹     樹
+  2. 二     二        12. 前進   進前      22. 鳥     鳥
+  3. 三     三        13. 上     起去      23. 貓     貓
+  4. 四     四        14. 下     落來      24. 狗     狗
+  5. 五     五        15. 左     倒邊      25. 志明   志明
+  6. 六     六        16. 右     正邊      26. 春嬌   春嬌
+  7. 七     七        17. 床     眠床      27. 可以   會使
+  8. 八     八        18. 去     去        28. 不可   袂使
+  9. 九     九        19. 快樂   快樂      29. 開     開
+  10.零     零        20. 房屋   厝        30. 關     關
+  </pre>
+
+  <button onclick="startRecording(this);">錄音</button>
+  <button onclick="stopRecording(this);" disabled>停止</button>
+  <div id=div1 style="display:none">
+      錄音中...
+  </div>
+  
+  <h2>錄音</h2>
+  <ul id="recordingslist"></ul>
+  
+  <h2>紀錄</h2>
+  <pre id="log"></pre>
+
+  <script>
+  function __log(e, data) {
+    log.innerHTML += "\n" + e + " " + (data || '');
+  }
+
+  var audio_context;
+  var recorder;
+
+  function startUserMedia(stream) {
+    var input = audio_context.createMediaStreamSource(stream);
+    __log('媒體流已創建');
+
+    // Uncomment if you want the audio to feedback directly
+    //input.connect(audio_context.destination);
+    //__log('Input connected to audio context destination.');
+    
+    recorder = new Recorder(input);
+    __log('錄音機初始化');
+  }
+
+  function startRecording(button) {
+    recorder && recorder.record();
+    div1.style.display='';
+    button.disabled = true;
+    button.nextElementSibling.disabled = false;
+    __log('錄音中...');
+  }
+
+  function stopRecording(button) {
+    recorder && recorder.stop();
+    div1.style.display='none';
+    button.disabled = true;
+    button.previousElementSibling.disabled = false;
+    __log('停止錄音');
+    
+    // create WAV download link using audio data blob
+    createDownloadLink();
+    
+    recorder.clear();
+  }
+
+  function createDownloadLink() {
+    recorder && recorder.exportWAV(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var li = document.createElement('li');
+      var au = document.createElement('audio');
+      var hf = document.createElement('a');
+      var remove = document.createElement("button");
+      var upload = document.createElement("button");
+
+      //name of .wav file to use during upload and download (without extendion)
+      var filename = new Date().toISOString();
+
+      au.controls = true;
+      au.src = url;
+      hf.href = url;
+      hf.download = filename + '.wav';
+      hf.innerHTML = hf.download;
+      remove.innerHTML = "刪除";
+      remove.onclick = function(){
+          recordingslist.removeChild(li)
+      };
+      li.appendChild(au);
+      li.appendChild(hf);
+      li.appendChild(remove);
+
+      upload.innerHTML = "上傳";
+      upload.onclick = function(){
+          uploadAudioFromBlob(blob);
+      };
+      li.appendChild(upload);
+
+      recordingslist.appendChild(li);
+    });
+  }
+
+  window.onload = function init() {
+    try {
+      // webkit shim
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia|| navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      window.URL = window.URL || window.webkitURL;
+      
+      audio_context = new AudioContext;
+      __log('音頻文本設置');
+      __log('navigator.getUserMedia ' + (navigator.getUserMedia ? '啟動' : '未啟動'));
+    } catch (e) {
+      alert('瀏覽器沒有音頻支援');
+    }
+    
+    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+      __log('No live audio input: ' + e);
+    });
+  };
+  </script>
+
+
+</body>
+</html>
