@@ -25,7 +25,7 @@ SECRET_KEY = '#42tu!h4!j^p32uwuwupt&g150s&118)i8knp0tha)4vcu2w5t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['twsonglah.iis.sinica.edu.tw']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
